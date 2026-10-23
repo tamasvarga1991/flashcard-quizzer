@@ -30,9 +30,7 @@ def load_flashcards(path: str | Path) -> list[dict[str, Any]]:
         with deck_path.open(encoding="utf-8") as deck_file:
             data: Any = json.load(deck_file)
     except FileNotFoundError:
-        raise FlashcardLoadError(
-            f"Flashcard file not found: {deck_path}"
-        ) from None
+        raise FlashcardLoadError(f"Flashcard file not found: {deck_path}") from None
     except OSError:
         raise FlashcardLoadError(
             f"Could not read flashcard file: {deck_path}"
@@ -63,15 +61,12 @@ def load_flashcards(path: str | Path) -> list[dict[str, Any]]:
 
     for index, card in enumerate(cards):
         if not isinstance(card, dict):
-            raise FlashcardLoadError(
-                f"Card at index {index} must be an object."
-            )
+            raise FlashcardLoadError(f"Card at index {index} must be an object.")
 
         for field in ("front", "back"):
             if field not in card:
                 raise FlashcardLoadError(
-                    f"Card at index {index} is missing required "
-                    f"field '{field}'."
+                    f"Card at index {index} is missing required " f"field '{field}'."
                 )
             if not isinstance(card[field], str):
                 raise FlashcardLoadError(

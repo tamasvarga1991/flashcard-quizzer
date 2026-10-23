@@ -31,9 +31,7 @@ def test_full_session(
     answers = iter(["  oNe  ", "incorrect", "THREE"])
     monkeypatch.setattr("builtins.input", lambda _prompt: next(answers))
 
-    result = main(
-        ["--file", str(deck_path), "--mode", "sequential", "--stats"]
-    )
+    result = main(["--file", str(deck_path), "--mode", "sequential", "--stats"])
 
     output = capsys.readouterr().out
     assert result == 0
@@ -81,9 +79,7 @@ def test_loader_error_is_reported_without_traceback(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     """Return a failure status and a concise error for a missing deck."""
-    result = main(
-        ["--file", str(tmp_path / "missing.json"), "--mode", "sequential"]
-    )
+    result = main(["--file", str(tmp_path / "missing.json"), "--mode", "sequential"])
 
     captured = capsys.readouterr()
     assert result == 1
@@ -109,9 +105,7 @@ def test_exit_stops_without_counting_current_prompt(
     answers = iter(["wrong", "  EXIT  "])
     monkeypatch.setattr("builtins.input", lambda _prompt: next(answers))
 
-    result = main(
-        ["--file", str(deck_path), "--mode", "sequential", "--stats"]
-    )
+    result = main(["--file", str(deck_path), "--mode", "sequential", "--stats"])
 
     output = capsys.readouterr().out
     assert result == 0
@@ -146,9 +140,7 @@ def test_ctrl_c_stops_gracefully_and_shows_partial_statistics(
 
     monkeypatch.setattr("builtins.input", interrupt)
 
-    result = main(
-        ["--file", str(deck_path), "--mode", "sequential", "--stats"]
-    )
+    result = main(["--file", str(deck_path), "--mode", "sequential", "--stats"])
 
     captured = capsys.readouterr()
     assert result == 0
@@ -171,9 +163,7 @@ def test_adaptive_session_counts_retries_and_unique_missed_terms(
     answers = iter(["wrong", "still wrong", "one"])
     monkeypatch.setattr("builtins.input", lambda _prompt: next(answers))
 
-    result = main(
-        ["--file", str(deck_path), "--mode", "adaptive", "--stats"]
-    )
+    result = main(["--file", str(deck_path), "--mode", "adaptive", "--stats"])
 
     output = capsys.readouterr().out
     stats = output.split("Session Statistics", maxsplit=1)[1]

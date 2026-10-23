@@ -42,9 +42,7 @@ def display_statistics(
     missed_terms: list[str],
 ) -> None:
     """Print the totals, accuracy, and unique missed front terms."""
-    accuracy = (
-        correct_answers / total_questions * 100 if total_questions else 0.0
-    )
+    accuracy = correct_answers / total_questions * 100 if total_questions else 0.0
     missed_display = ", ".join(missed_terms) if missed_terms else "None"
     print("\nSession Statistics")
     print(f"Total Questions: {total_questions}")
@@ -69,9 +67,7 @@ def run_quiz(engine: QuizEngine, show_stats: bool) -> None:
                 print("Quiz stopped.")
                 break
 
-            is_correct = (
-                answer.strip().casefold() == card["back"].strip().casefold()
-            )
+            is_correct = answer.strip().casefold() == card["back"].strip().casefold()
             total_questions += 1
             if is_correct:
                 correct_answers += 1

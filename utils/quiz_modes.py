@@ -68,9 +68,7 @@ class AdaptiveMode(QuizMode):
 
     def next_card(self) -> CardSelection | None:
         if self._current_index is not None:
-            raise RuntimeError(
-                "Record the current card's answer before continuing."
-            )
+            raise RuntimeError("Record the current card's answer before continuing.")
         if not self._pending_indices:
             return None
 
@@ -81,9 +79,7 @@ class AdaptiveMode(QuizMode):
     def record_answer(self, card_index: int, is_correct: bool) -> None:
         """Requeue an incorrect card at the front until answered correctly."""
         if card_index != self._current_index:
-            raise ValueError(
-                "The answer must match the currently served card."
-            )
+            raise ValueError("The answer must match the currently served card.")
 
         if not is_correct:
             self._pending_indices.appendleft(card_index)

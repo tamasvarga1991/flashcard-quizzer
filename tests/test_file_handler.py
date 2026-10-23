@@ -35,9 +35,7 @@ def test_load_flashcards_from_cards_object(tmp_path: Path) -> None:
 
 
 @pytest.mark.parametrize("data", [[], {"cards": []}])
-def test_load_flashcards_allows_empty_decks(
-    tmp_path: Path, data: object
-) -> None:
+def test_load_flashcards_allows_empty_decks(tmp_path: Path, data: object) -> None:
     """Accept empty arrays in either supported format."""
     deck_path = tmp_path / "empty_deck.json"
     write_json(deck_path, data)
@@ -99,9 +97,7 @@ def test_load_flashcards_rejects_unreadable_file(
 
     monkeypatch.setattr(Path, "open", raise_permission_error)
 
-    with pytest.raises(
-        FlashcardLoadError, match="Could not read flashcard file"
-    ):
+    with pytest.raises(FlashcardLoadError, match="Could not read flashcard file"):
         load_flashcards(deck_path)
 
 
@@ -117,9 +113,7 @@ def test_load_flashcards_rejects_invalid_top_level_values(
         load_flashcards(deck_path)
 
 
-@pytest.mark.parametrize(
-    "data", [{}, {"other": []}, {"cards": None}, {"cards": {}}]
-)
+@pytest.mark.parametrize("data", [{}, {"other": []}, {"cards": None}, {"cards": {}}])
 def test_load_flashcards_rejects_missing_or_invalid_cards_array(
     tmp_path: Path, data: object
 ) -> None:
@@ -127,9 +121,7 @@ def test_load_flashcards_rejects_missing_or_invalid_cards_array(
     deck_path = tmp_path / "missing_cards.json"
     write_json(deck_path, data)
 
-    with pytest.raises(
-        FlashcardLoadError, match="must contain a 'cards' array"
-    ):
+    with pytest.raises(FlashcardLoadError, match="must contain a 'cards' array"):
         load_flashcards(deck_path)
 
 
@@ -138,9 +130,7 @@ def test_load_flashcards_rejects_non_object_card(tmp_path: Path) -> None:
     deck_path = tmp_path / "invalid_card.json"
     write_json(deck_path, ["not a card"])
 
-    with pytest.raises(
-        FlashcardLoadError, match="Card at index 0 must be an object"
-    ):
+    with pytest.raises(FlashcardLoadError, match="Card at index 0 must be an object"):
         load_flashcards(deck_path)
 
 

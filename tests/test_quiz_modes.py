@@ -5,12 +5,7 @@ from copy import deepcopy
 import pytest
 
 from utils.quiz_mode_factory import create_quiz_mode
-from utils.quiz_modes import (
-    AdaptiveMode,
-    QuizEngine,
-    RandomMode,
-    SequentialMode,
-)
+from utils.quiz_modes import AdaptiveMode, QuizEngine, RandomMode, SequentialMode
 
 
 def make_cards() -> list[dict[str, str]]:
@@ -142,9 +137,7 @@ def test_quiz_mode_factory_rejects_unsupported_mode() -> None:
         create_quiz_mode("typing", make_cards())
 
 
-@pytest.mark.parametrize(
-    "mode_type", [SequentialMode, RandomMode, AdaptiveMode]
-)
+@pytest.mark.parametrize("mode_type", [SequentialMode, RandomMode, AdaptiveMode])
 def test_quiz_modes_return_none_for_empty_decks(
     mode_type: type[SequentialMode | RandomMode | AdaptiveMode],
 ) -> None:

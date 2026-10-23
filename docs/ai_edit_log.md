@@ -117,6 +117,66 @@ For each AI interaction, create a new entry with the following structure:
 
 ---
 
+### 2026-10-23 - Phase 2 Planning and Architecture Review
+
+**Context:** I was preparing the Flashcard Quizzer's Core Logic & Design Patterns phase and wanted an implementation plan grounded in the current project.
+
+**AI Tool Used:** GitHub Copilot
+
+**Prompt/Request:** I explicitly instructed the AI not to modify any files. I asked it to inspect the current implementation, tests, design-pattern guidance, review checklist, and project documentation, then propose a minimal Phase 2 plan without implementing the quiz loop or CLI.
+
+**AI Response:** The AI proposed the Strategy Pattern with an abstract `QuizMode`, `SequentialMode`, `RandomMode`, `AdaptiveMode`, and a minimal `QuizEngine`, plus a Factory for mode selection. It initially recommended limiting an incorrectly answered card to one retry.
+
+**Changes Made:** No files were changed during planning. Human decision: accept the proposed architecture, but reject the one-retry limit because incorrect cards must actually be repeated and remain eligible for prioritized repetition until answered correctly.
+
+**Reasoning:** A fixed retry limit would stop prioritizing a card after a repeated wrong answer, contrary to the reviewed requirement. The strategy classes, engine boundary, and factory otherwise fit the requested scope.
+
+**Outcome:** Phase 2 architecture and adaptive retry behavior were agreed before implementation.
+
+**Lessons Learned:** Reviewing behavior requirements against a proposed policy can reveal where a seemingly simple limit would contradict the feature's intended behavior.
+
+---
+
+### 2026-10-23 - Phase 2 Implementation and Verification
+
+**Context:** After agreeing on the architecture and unbounded-until-correct adaptive repetition, I asked the AI to implement the Phase 2 quiz strategies and tests.
+
+**AI Tool Used:** GitHub Copilot
+
+**Prompt/Request:** Implement the quiz modes, factory, minimal engine, and focused pytest coverage. Preserve Phase 1, keep CLI and later features out of scope, and ensure adaptive misses are prioritized repeatedly without a retry cap.
+
+**AI Response:** The AI created `utils/quiz_modes.py`, `utils/quiz_mode_factory.py`, and `tests/test_quiz_modes.py`. The modes share the `QuizMode` interface, the factory selects a strategy by supported mode name, and `QuizEngine` delegates selection and answer feedback. `AdaptiveMode` schedules cards by original index so identical card contents remain distinct.
+
+**Changes Made:** The AI implemented the planned Strategy and Factory patterns and added tests for the modes, adaptive behavior, factory selection, and empty decks. No Phase 1 files or `main.py` were changed.
+
+**Reasoning:** Separate strategies keep scheduling behavior modular, while original indices make answer feedback unambiguous for cards with identical contents.
+
+**Outcome:** The complete test suite passed with 34 tests, and flake8 passed for the Phase 2 files.
+
+**Lessons Learned:** Representing cards by position preserves identity without adding a separate card model, and testing a strategy through observable card order verifies its behavior.
+
+---
+
+### 2026-10-23 - Phase 2 Code Review and Test Refinement
+
+**Context:** I requested a review of the Phase 2 implementation against the requirements, reviewed design decisions, checklist, and design-pattern guidance.
+
+**AI Tool Used:** GitHub Copilot
+
+**Prompt/Request:** I explicitly asked the AI to review `utils/quiz_modes.py`, `utils/quiz_mode_factory.py`, and `tests/test_quiz_modes.py` without creating, modifying, or deleting files.
+
+**AI Response:** The AI found no blocking correctness issues. It recommended tests for adaptive state transitions, a stronger RandomMode immutability check, case-insensitive factory handling, and a scenario with multiple different missed cards.
+
+**Changes Made:** Human decisions: accept the adaptive state-transition tests and stronger immutability verification; reject case-insensitive factory names because the specification does not require them; defer the optional multiple-missed-cards scenario. The AI changed only `tests/test_quiz_modes.py`; no production-code changes were required.
+
+**Reasoning:** The accepted tests cover existing contract guards and verify both list and card-content immutability. Lowercase-only mode names and deferring the additional scenario keep the agreed scope unchanged.
+
+**Outcome:** The complete test suite passed with 37 tests, and flake8 passed for all Phase 2 files.
+
+**Lessons Learned:** Review suggestions should be checked against the actual requirements: some improve coverage directly, while others would expand behavior beyond the specification.
+
+---
+
 ## Tips for Effective AI Collaboration
 
 ### 1. Be Specific in Your Requests

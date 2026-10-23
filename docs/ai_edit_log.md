@@ -297,6 +297,46 @@ For each AI interaction, create a new entry with the following structure:
 
 ---
 
+### 2026-10-23 - Phase 5 Final Rubric Review and Pre-Submission Audit
+
+**Context:** I requested a final audit of the complete Flashcard Quizzer project before submission.
+
+**AI Tool Used:** GitHub Copilot
+
+**Prompt/Request:** I explicitly instructed the AI to inspect and assess the repository against the functional requirements, architecture and design patterns, CLI, testing and quality gates, AI collaboration evidence, and submission deliverables without creating, modifying, formatting, or deleting files.
+
+**AI Response:** The AI found the functional, architecture, CLI, testing, and quality requirements satisfied. Verification confirmed 48 passing tests, 99.53% coverage, and passing Black, mypy, flake8, and isort checks. The required sequential and adaptive CLI examples were verified with controlled input. The AI identified that the README still contained starter-state information, the final report was not yet completed, and coverage evidence still needed to be included appropriately for submission. It also noted that the report template says 2,000-3,000 words, while the project instructions and rubric reviewed by the human specify 1,000-1,500 words.
+
+**Changes Made:** No files were changed during the audit. Human decisions: use the explicit 1,000-1,500-word project/rubric requirement for the final report, update the README in Phase 6, preserve appropriate coverage evidence, and not add optional Bandit/Safety scans because they are not required by the project rubric.
+
+**Reasoning:** The final audit confirmed the application and quality gates while separating those results from the documentation deliverables that remain. The human-reviewed project requirement is authoritative for the final report length; optional scans should not be treated as submission blockers.
+
+**Outcome:** The application passed the audited functional and quality checks. The README and final report remain Phase 6 submission work, and the coverage result needs to be preserved in the submitted evidence. No files were changed during the audit itself.
+
+**Lessons Learned:** A pre-submission audit should distinguish working software and verified quality gates from documentation and evidence that still need to be prepared.
+
+---
+
+### 2026-10-23 - Phase 6 Final Documentation and Submission Artifacts
+
+**Context:** I prepared the final project documentation after the Phase 5 audit identified that the README, report, and coverage evidence needed to be completed for submission.
+
+**AI Tool Used:** GitHub Copilot
+
+**Prompt/Request:** I asked the AI to update the README based only on the current implementation, tests, requirements, and configuration, then to analyze the report template and propose a plan without writing the report. I later asked it to create the final report using the template structure and repository evidence, with a strict 1,000-1,500-word target.
+
+**AI Response:** The AI replaced the README's starter-state content with verified features, setup instructions, usage examples, tests, quality checks, and project structure. Before report writing, it identified that the template's 2,000-3,000-word guidance conflicted with the authoritative project/rubric requirement of 1,000-1,500 words.
+
+**Changes Made:** Human decision: follow the 1,000-1,500-word requirement while retaining useful template structure. I supplied the personal learning and reflection perspective so the AI would not invent personal experiences. The AI created `docs/final_report.md` at approximately 1,322 words, grounded in the repository and AI log. It documented the UTF-8 review, rejection of the AdaptiveMode one-retry limit, selective acceptance and rejection of suggestions, quality-tool configuration alignment, and the decision not to add artificial tests to move coverage from 99.53% to 100%.
+
+**Reasoning:** The authoritative report limit takes precedence over the conflicting template footer. Personal reflections are the student's account, while technical claims and collaboration events must be supported by the code, test results, and edit log.
+
+**Outcome:** A persistent `docs/coverage_report.txt` was generated. It records 48 passing tests and 429 measured statements with two missed; its terminal summary displays 99% because it rounds to a whole number, while the precise coverage check recorded 99.53%. No application functionality was changed during Phase 6.
+
+**Lessons Learned:** Final documentation should distinguish verified technical evidence from personal reflection, resolve conflicting instructions using the authoritative rubric, and preserve quality evidence without changing application behavior.
+
+---
+
 ## Tips for Effective AI Collaboration
 
 ### 1. Be Specific in Your Requests

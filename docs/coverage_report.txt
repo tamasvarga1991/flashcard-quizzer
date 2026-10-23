@@ -1,0 +1,27 @@
+============================= test session starts =============================
+platform win32 -- Python 3.10.5, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\VKPLO0R\OneDrive - Volkswagen AG\Desktop\T9\GenAI\Module 1\10. Vibe Cooding\Project\starter
+plugins: anyio-4.15.1, platformdirs-4.12.4, cov-7.1.0
+collected 48 items
+
+tests\test_file_handler.py .......................                       [ 47%]
+tests\test_main.py ...........                                           [ 70%]
+tests\test_quiz_modes.py ..............                                  [100%]
+
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.10.5-final-0 _______________
+
+Name                         Stmts   Miss  Cover   Missing
+----------------------------------------------------------
+main.py                         68      1    99%   113
+tests\__init__.py                0      0   100%
+tests\test_file_handler.py      79      0   100%
+tests\test_main.py             109      1    99%   205
+tests\test_quiz_modes.py        72      0   100%
+utils\__init__.py                0      0   100%
+utils\file_handler.py           33      0   100%
+utils\quiz_mode_factory.py       8      0   100%
+utils\quiz_modes.py             60      0   100%
+----------------------------------------------------------
+TOTAL                          429      2    99%
+============================= 48 passed in 1.27s ==============================

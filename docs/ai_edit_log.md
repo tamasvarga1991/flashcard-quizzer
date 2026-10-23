@@ -177,6 +177,66 @@ For each AI interaction, create a new entry with the following structure:
 
 ---
 
+### 2026-10-23 - Phase 3 Planning and CLI Design
+
+**Context:** I was preparing to integrate the data loader and quiz engine into a playable command-line application.
+
+**AI Tool Used:** GitHub Copilot
+
+**Prompt/Request:** I explicitly instructed the AI not to modify any files. I asked it to inspect the current Phase 1 and Phase 2 implementation, tests, README, requirements, review checklist, and starter documentation, then propose a minimal Phase 3 plan.
+
+**AI Response:** The AI proposed using `main.py` as the CLI boundary and reusing the existing Phase 1 loader and Phase 2 factory and engine. It identified ambiguities around whether file and mode arguments should be required or have defaults, whether `--stats` should be opt-in, how partial statistics should behave after early termination, and how missed terms should be represented.
+
+**Changes Made:** No files were changed during planning. Human decisions: require both file and mode arguments, keep `--stats` optional, show partial statistics after `exit` or Ctrl+C when requested, count adaptive retries as answered questions, and keep missed terms unique in first-missed order.
+
+**Reasoning:** These decisions define predictable CLI behavior while reusing the existing loader and engine contracts without adding a separate session framework.
+
+**Outcome:** The Phase 3 CLI boundary and statistics behavior were agreed before implementation.
+
+**Lessons Learned:** Explicitly resolving CLI and statistics behavior before implementation helps keep the interface consistent with the existing components.
+
+---
+
+### 2026-10-23 - Phase 3 Implementation and Verification
+
+**Context:** After agreeing on the CLI behavior, I asked the AI to connect the existing components into an interactive application and add integration coverage.
+
+**AI Tool Used:** GitHub Copilot
+
+**Prompt/Request:** Implement the CLI in `main.py` with argparse, existing loader/factory/engine integration, interactive answer handling, feedback colors, graceful stopping, optional statistics, and CLI tests. Do not modify Phase 1 or Phase 2 code, README, or this log.
+
+**AI Response:** The AI implemented `main.py` and created `tests/test_main.py`. It reused `load_flashcards()`, `create_quiz_mode()`, and `QuizEngine`, rather than duplicating their behavior. The CLI included argparse, case-insensitive answer comparison, ANSI Correct/Incorrect feedback, graceful `exit` and Ctrl+C handling, loader-error reporting, statistics, and empty-deck handling.
+
+**Changes Made:** The AI added the Phase 3 entry point and its integration tests without changing Phase 1 or Phase 2 production files.
+
+**Reasoning:** Keeping CLI orchestration at the application boundary lets the existing loader and strategy engine retain their separate responsibilities.
+
+**Outcome:** Initial verification passed with 47 tests; flake8 passed for the Phase 3 files, and `python main.py --help` displayed the expected options.
+
+**Lessons Learned:** An integration test can exercise parsing, loading, strategy selection, user answers, feedback, and statistics together without requiring a real terminal.
+
+---
+
+### 2026-10-23 - Phase 3 Code Review and Test Refinement
+
+**Context:** I requested a review of the CLI implementation and tests against the Phase 3 requirements and project review guidance.
+
+**AI Tool Used:** GitHub Copilot
+
+**Prompt/Request:** I explicitly instructed the AI to review `main.py` and `tests/test_main.py` without creating, modifying, or deleting any files.
+
+**AI Response:** The AI found no required production-code corrections. It proposed optional test improvements, including stronger Ctrl+C traceback verification, partial-statistics checks after early termination, and an AdaptiveMode CLI integration test.
+
+**Changes Made:** Human decisions: accept the stronger Ctrl+C verification, partial-statistics tests, and AdaptiveMode integration test; reject additional isolated required-argument tests and a dedicated short-flag test; keep `exit` reserved even if it matches a theoretical answer. The AI changed only `tests/test_main.py`; no production code changes were required.
+
+**Reasoning:** These accepted tests cover behavior not demonstrated by the initial full-session test, while the rejected items would add coverage or behavior beyond the decisions needed for this phase.
+
+**Outcome:** Final verification passed with 48 tests, and flake8 passed for the Phase 3 files.
+
+**Lessons Learned:** Reviewing integration coverage separately from production behavior helped strengthen confidence without expanding the implementation.
+
+---
+
 ## Tips for Effective AI Collaboration
 
 ### 1. Be Specific in Your Requests

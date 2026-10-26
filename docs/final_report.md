@@ -6,19 +6,19 @@
 
 ## Executive Summary
 
-Flashcard Quizzer is a Python command-line application for studying JSON decks. It validates cards, quizzes users in sequential, random, or adaptive modes, and can report session statistics.
+Flashcard Quizzer is a Python command-line application for studying validated JSON flashcard decks in sequential, random, or adaptive modes, with optional session statistics.
 
-I used GitHub Copilot for planning, implementation, review, and refinement. Separating analysis-only prompts from modification requests kept scope decisions visible. Final verification passed 48 tests with 99.53% project-wide coverage; Black, mypy, flake8, and isort also passed.
+GitHub Copilot supported planning, implementation, review, and refinement. Separating analysis-only prompts from modification requests kept scope decisions visible. Final verification passed 48 tests at 99.53% project-wide coverage; Black, mypy, flake8, and isort passed.
 
 ## Project Overview
 
 ### Problem Statement
 
-The project lets users study terms from JSON decks without editing application code for each deck.
+Users can study terms from JSON decks without editing application code for each deck.
 
 ### Solution Approach
 
-Phase 1 added `utils/file_handler.py` to load both supported JSON formats, validate string-valued `front` and `back` fields, preserve additional fields, and report file or data errors through `FlashcardLoadError`. Phase 2 added the abstract `QuizMode` strategies, a delegating `QuizEngine`, and a factory for mode selection. `main.py` connects them with required file and mode arguments and optional `--stats`.
+Phase 1 added `utils/file_handler.py` to load both JSON formats, validate string-valued `front` and `back`, preserve extra fields, and report errors through `FlashcardLoadError`. Phase 2 added abstract `QuizMode` strategies, a delegating `QuizEngine`, and a mode factory. `main.py` connects them with required file/mode arguments and optional `--stats`.
 
 ### Final Features
 
@@ -28,7 +28,7 @@ Sequential mode follows source order, Random mode shuffles a copy and serves eve
 
 ### AI Tools Used and Workflow
 
-GitHub Copilot was the AI assistant recorded in the project log. I used a sequence of planning, implementation, review, refinement, and verification rather than one large prompt. Planning and review requests explicitly prohibited file changes; implementation requests set scope and acceptance criteria. I checked suggestions against the requirements and made the final decisions about behavior.
+GitHub Copilot is the AI assistant documented in the project log. I used staged planning, implementation, review, refinement, and verification rather than one large prompt. Planning/review requests prohibited file changes; implementation requests defined scope and acceptance criteria. I checked suggestions against requirements and made final behavior decisions.
 
 ### Most Valuable Interactions
 
@@ -44,23 +44,32 @@ In Phase 4, the AI's assessment found formatting and import-order issues despite
 
 ### Design and Code Structure
 
-The Strategy Pattern gives each mode a shared scheduling interface with a different algorithm; the Factory keeps mode-name selection out of the engine. `file_handler.py` owns loading and validation, `quiz_modes.py` owns strategies and engine behavior, and `main.py` owns arguments and terminal interaction. This separates concerns without a framework or runtime dependency.
+The Strategy Pattern gives each mode a shared scheduling interface with a different algorithm; the Factory keeps mode selection out of the engine. `file_handler.py` owns loading, `quiz_modes.py` owns scheduling, and `main.py` owns arguments and terminal interaction. This separates concerns without a runtime framework.
 
 The public functions and classes use type hints and docstrings. The CLI handles `FlashcardLoadError` at its boundary, and tests use temporary files, monkeypatched input, and captured output rather than requiring a real interactive session. Tests were written alongside the implementation, but the log does not establish a consistent test-first process, so I do not claim strict TDD.
 
 ### Testing Strategy
 
-The pytest suite covers both loader formats, malformed and invalid data, mode scheduling, duplicate cards, adaptive retries, factory behavior, command-line validation, a complete three-question session, partial statistics, exit, Ctrl+C, and empty decks. `test_full_session`, `test_quiz_mode_factory`, and `test_adaptive_mode_behavior` cover the required integration and strategy behaviors. The final run passed all 48 tests.
+Tests cover both loader formats, invalid data, mode scheduling, duplicate cards, adaptive retries, factory behavior, CLI validation, a three-question session, partial statistics, exit, Ctrl+C, and empty decks. The required `test_full_session`, `test_quiz_mode_factory`, and `test_adaptive_mode_behavior` are present. All 48 tests passed.
 
 ## Technical Challenges and Solutions
 
-The UTF-8 review found that invalid bytes were not translated into the loader's application-specific error; a focused regression test was added. The adaptive retry proposal was plausible in isolation but conflicted with the requirement, so I rejected its one-retry limit. Quality checks also exposed differing Black/flake8 line lengths and isort formatting. `setup.cfg` aligned the tools at 88 characters and the Black profile. An initial pytest command used an interpreter without pytest; switching to the existing `venv` resolved that issue.
+Review found invalid UTF-8 was not translated into the loader's application-specific error; a focused regression test was added. I rejected the proposed one-retry limit because it conflicted with the adaptive requirement. Quality checks exposed Black/flake8 line-length and isort formatting conflicts; `setup.cfg` aligned them at 88 characters and the Black profile. An initial interpreter lacked pytest, so the existing `venv` was used.
 
 ## Code Quality Analysis
 
 The final project-wide coverage result is **99.53%** (427 of 429 measured statements covered using `--cov=.`). The remaining statements are the script-entry guard and an intentional test failure sentinel, not untested quiz or loader behavior. I chose not to add artificial tests solely to move the result to 100%. The final checks passed: Black, mypy, bare flake8, and isort. The CLI help command and the sequential and adaptive sample-deck commands were also verified with controlled input.
 
-For self-assessment, I consider the clearest evidence of maintainability the separation between loading, scheduling, mode construction, and CLI handling, together with tests for both success and failure cases. I have not assigned numerical ratings: those are personal judgments not established by repository metrics.
+Production-code metrics use only `main.py`, `utils/file_handler.py`, `utils/quiz_modes.py`, and `utils/quiz_mode_factory.py`; tests, `__init__.py`, documentation, generated files, and virtual-environment files are excluded. These files contain **325 physical lines**, **19 function/method definitions**, and **6 class definitions**. Physical lines include blanks and comments; definitions were counted by parsing each file with Python AST.
+
+**Linting score:** Not applicable—flake8 reports violations rather than a numeric linting score. The final bare flake8 check completed without errors.
+
+These reflective self-assessment ratings are supported by the project evidence, not automated scores:
+
+- **Code Readability: 5/5** — Responsibilities are separated across focused modules, with type hints and docstrings supporting comprehension.
+- **Code Maintainability: 5/5** — Strategy and Factory patterns isolate quiz-mode behavior and allow another mode without redesigning the loader or CLI.
+- **Test Quality: 5/5** — 48 tests pass, coverage is 99.53%, and tests meaningfully cover edge cases, errors, adaptive behavior, and CLI integration.
+- **Documentation: 4/5** — README, AI log, coverage evidence, and report provide substantial documentation, but the first report omitted required template metrics and ratings identified by reviewer feedback.
 
 ## Learning Outcomes
 
@@ -72,13 +81,13 @@ I also learned not to accept every recommendation automatically. I accepted test
 
 ## Reflection
 
-The most effective parts of the process were the no-edit planning and review steps, followed by small implementation requests and focused verification. Concrete examples made review productive: the UTF-8 issue became a regression test, the adaptive retry policy was checked against the requirement, and formatter disagreements led to shared configuration rather than hand-edited code to satisfy incompatible defaults.
+No-edit planning/review followed by scoped implementation and verification worked well. Concrete review produced the UTF-8 regression test, clarified adaptive retries against requirements, and led to shared formatter configuration instead of conflicting manual formatting.
 
-The project also showed that software can be functionally complete while submission documentation remains unfinished. The README was updated during Phase 6, and this report records the final quality results. Coverage was measured and its percentage is included here; any separately required coverage artifact should be included with the submission materials.
+Next time, I would use the application as an end user earlier instead of relying primarily on tests, coverage, and code checks. Extensive automated verification passed before I personally exercised the full quiz experience. Automated checks are essential, but do not replace hands-on product validation. I would use: `Plan -> Generate -> Review -> Refine -> Verify -> Use it yourself -> Ship`.
 
 ### Future Enhancements
 
-No specific future product features were selected in the documented phases. Any further work should be based on course requirements or user feedback rather than presented here as an existing commitment.
+A possible future Spaced Repetition mode could extend the Strategy Pattern by scheduling cards using learning history across multiple sessions rather than only current-session mistakes. This is a proposal, not implemented functionality or a commitment.
 
 ## Conclusion
 
